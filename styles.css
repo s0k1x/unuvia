@@ -3196,3 +3196,26 @@ html.light .exam{background:#f5f7fb}
 .exam .add,.exam .secondary{font-size:15px!important;padding:13px 16px!important;border-radius:14px!important;min-height:48px}
 .exr-intro .add,.exr-intro .secondary{width:100%}
 .ex-res-kpi,.ex .adm-kpi{grid-template-columns:repeat(3,1fr)}
+/* ===================== MODO LIGERO (móviles modestos) ===================== */
+.szb-stars i{animation:none}
+.szb-sg{position:absolute;inset:0;animation:szTw 2.8s ease-in-out infinite alternate;animation-delay:var(--d)}
+.sz-gl{animation:szGl 2s ease-in-out infinite;animation-delay:calc(var(--i)*.2s)}
+html.lite:not(.light) :is(.card.content,.card.sidecard,.ib-bar,.modalbox,#authForm,.login-mode-switch,#otpBox,.wa-top,#netBar,.am-card,.popup-window){background-color:#121722!important}
+html.lite.light :is(.card.content,.card.sidecard,.ib-bar,.modalbox,#authForm,.login-mode-switch,#otpBox,.wa-top,#netBar,.am-card,.popup-window){background-color:rgba(255,255,255,.97)!important}
+html.lite :is(.aurora::after,.aurora i,.aurora b,.comet,.welcome-box::after,.theme-switch__stars-cluster .star){animation:none!important}
+html.lite :is(.szb,#szHdr) *{animation:none!important}
+html.lite :is(.szb-sleigh,.szb-ghost,.szb-flock,.szb-fog,.szb-peek){display:none!important}
+html.lite .szb-o{filter:none}
+html.lite :is(.card.content,.card.sidecard){box-shadow:0 1px 3px rgba(0,0,0,.18)!important}
+
+/* Con el zoom automático, las alturas en vh/dvh se compensan para que las ventanas siempre quepan */
+:root{--z:1}
+.modalbox{max-height:calc((100dvh - 36px - var(--sat,0px) - var(--sab,0px)) / var(--z))!important}
+.rv-panel{max-height:calc(86dvh / var(--z))}
+.dm-t{max-height:calc(46dvh / var(--z))}
+#classView .layout>aside.side{max-height:calc((100dvh - 100px) / var(--z))}
+.exam{height:calc(100dvh / var(--z));inset:0 auto auto 0;width:calc(100vw / var(--z))}
+.adm{height:calc(100dvh / var(--z));inset:0 auto auto 0;width:calc(100vw / var(--z))}
+/* móvil en horizontal: pantalla baja */
+html.vp-short .szb-land,html.vp-short .szb-moon,html.vp-short .szb-flock{display:none}
+html.vp-short header.top{padding-top:4px}
