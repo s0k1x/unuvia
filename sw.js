@@ -2,7 +2,7 @@
    - Avisos al móvil.
    - Sin conexión: guarda una copia de la web (red primero; si no hay internet, usa la copia).
      Así siempre ves la última versión cuando hay conexión. */
-const CACHE = 'unuvia-v2';
+const CACHE = 'unuvia-v3';
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.webmanifest', '/icon-192.png', '/badge-96.png']).catch(() => {})));
@@ -36,19 +36,42 @@ self.addEventListener('fetch', e => {
 self.addEventListener('push', e => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch (x) { d = { body: e.data ? e.data.text() : '' }; }
-  const title = d.title || 'Unuvia';
-  e.waitUntil(self.registration.showNotification(title, {
-    body: d.body || '',
+  const n = unuviaNotif(d);
+  e.waitUntil(self.registration.showNotification(n.title, {
+    body: n.body,
     icon: 'icon-192.png',
     badge: 'badge-96.png',
     lang: 'es',
     timestamp: Date.now(),
-    vibrate: [90, 50, 90],
+    vibrate: [70, 40, 70],
     tag: d.tag || undefined,
     renotify: !!d.tag,
     data: { url: d.url || '/' }
   }));
 });
+
+/* Diseño del aviso: «Unuvia» primero; debajo, el icono del tipo + la clase, y después el mensaje.
+   Funciona con los avisos nuevos (v:2) y con los antiguos (adivina el tipo por el texto). */
+const NOTIF_EMO = { anuncio: '📢', trabajo: '📝', evento: '📅', nota: '✅', comentario: '💬', chat: '💬', entrega: '📥', miembro: '👋', rol: '🎖️', recordatorio: '⏰', prueba: '🔔' };
+function guessKind(t) {
+  t = String(t || '').toLowerCase();
+  if (/nuevo evento|evento:|falta de asistencia|retraso/.test(t)) return 'evento';
+  if (/anuncio|encuesta|publicó/.test(t)) return 'anuncio';
+  if (/nueva tarea|tarea|pregunta|material|entrega:?/.test(t)) return 'trabajo';
+  if (/nota|calific|examen corregido|puntos/.test(t)) return 'nota';
+  if (/coment/.test(t)) return 'comentario';
+  if (/foto|mensaje|nota de voz|escribió/.test(t)) return 'chat';
+  if (/se unió|bienvenid/.test(t)) return 'miembro';
+  return 'prueba';
+}
+function unuviaNotif(d) {
+  const kind = d.kind || guessKind(d.body);
+  const cls = String(d.v === 2 ? (d.cls || '') : (d.title && d.title !== 'Unuvia' ? d.title : '')).trim();
+  const msg = String(d.body || '').trim();
+  const emo = NOTIF_EMO[kind] || '🔔';
+  if (!cls) return { title: 'Unuvia', body: emo + ' ' + msg.slice(0, 180) };
+  return { title: 'Unuvia', body: emo + ' ' + cls + (msg ? '\n' + msg.slice(0, 180) : '') };
+}
 
 self.addEventListener('notificationclick', e => {
   e.notification.close();
