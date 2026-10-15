@@ -3907,3 +3907,70 @@ label.fp-has *{color:#fff!important}
 html.light #chat.view{background-color:#f6f3ef!important}
 .msg.stk,.msg.stk.me{background:transparent!important;box-shadow:none!important;border:0!important;padding:2px!important}
 .msg.stk .wa-t{background:rgba(0,0,0,.45);color:#fff;padding:1px 6px;border-radius:8px}
+/* ===================== RONDA 8 ===================== */
+/* 1 · «+ Elegir foto»: la vista previa vive solo dentro del recuadro */
+.custum-file-upload{position:relative;overflow:hidden}
+label.custum-file-upload.fp-has{background:var(--fp) center/contain no-repeat,var(--ui-card2)!important;border-style:solid!important;border-color:rgba(var(--accent-rgb),.55)!important;min-height:250px!important;color:inherit!important}
+label.custum-file-upload.fp-has .icon,label.custum-file-upload.fp-has .text{opacity:0;pointer-events:none;position:absolute}
+.fp-chg{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);padding:7px 16px;border-radius:99px;background:rgba(0,0,0,.66);color:#fff;font-size:12.5px;font-weight:750;white-space:nowrap;pointer-events:none}
+/* 2 · Stickers: cuadrícula limpia y botones de editar / borrar */
+#stkPanel .wa-grid.stk{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;padding:6px 4px 10px!important}
+#stkPanel .wa-grid.stk>button,#stkPanel .wa-grid.stk>.stk-cell{aspect-ratio:1/1;width:100%;height:auto!important;min-width:0;border-radius:16px;background:var(--ui-card2);border:1px solid var(--ui-line);display:grid;place-items:center;font-size:34px;position:relative;padding:0;overflow:visible}
+#stkPanel .wa-grid.stk>.stk-new{border:2px dashed rgba(var(--accent-rgb),.5);background:rgba(var(--accent-rgb),.07);color:var(--accent-text,var(--accent));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.stk-new b{font-size:30px;line-height:1}.stk-new small{font-size:11.5px;font-weight:750}
+.stk-cell .stk-img{position:absolute!important;inset:0;width:100%;height:100%;display:grid;place-items:center;padding:6px!important;background:transparent!important;border:0!important;border-radius:16px}
+.stk-cell .stk-img img{width:100%;height:100%;max-width:none;max-height:none;object-fit:contain}
+.stk-ed,.stk-del{position:absolute;top:-5px;width:24px;height:24px;border-radius:50%;color:#fff;font-size:12px;display:none;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.35);cursor:pointer;z-index:2;line-height:1}
+.stk-ed{left:-5px;background:var(--acc-strong)}.stk-del{right:-5px;background:#ef4444}
+.stk-cell:hover .stk-ed,.stk-cell:hover .stk-del,.stk-cell:focus-within .stk-ed,.stk-cell:focus-within .stk-del{display:grid}
+@media (hover:none){.stk-ed,.stk-del{display:grid;opacity:.92}}
+.msg.stk{width:fit-content!important;max-width:62%!important;display:flex!important;flex-direction:column;background:transparent!important;box-shadow:none!important;border:0!important;padding:2px!important}
+.msg.stk.me{align-items:flex-end}.msg.stk .wa-t{align-self:flex-end;font-size:11px;padding:1px 7px;border-radius:99px}
+.wa-sticker img{width:min(150px,40vw)!important;height:auto!important;aspect-ratio:1/1;object-fit:contain}
+/* editor de stickers */
+.se{position:fixed;inset:0;z-index:430;display:grid;place-items:center;padding:12px;background:rgba(2,6,23,.62);animation:lgIn .25s ease}
+.se-box{width:min(880px,100%);max-height:96dvh;overflow:auto;background:var(--ui-panel);color:var(--ui-text);border:1px solid var(--ui-line);border-radius:24px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.se-h{display:flex;align-items:center;justify-content:space-between}.se-h b{font-size:18px}
+.se-body{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:20px;align-items:start}
+.se-pv{position:sticky;top:0}
+.se-cv{aspect-ratio:1/1;width:100%;max-width:380px;margin:0 auto;border-radius:22px;overflow:hidden;border:1px solid var(--ui-line);background-color:#e4e4e7;background-image:conic-gradient(#d4d4d8 25%,transparent 0 50%,#d4d4d8 0 75%,transparent 0);background-size:22px 22px;touch-action:none}
+html:not(.light) .se-cv{background-color:#27272a;background-image:conic-gradient(#3f3f46 25%,transparent 0 50%,#3f3f46 0 75%,transparent 0)}
+.se-cv canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}.se-cv canvas:active{cursor:grabbing}
+.se-tip{display:block;color:var(--ui-mut);font-size:12px;margin-top:6px;line-height:1.4;text-align:center}.se-ctl .se-tip{text-align:left}
+.se-ctl{display:flex;flex-direction:column;gap:10px;min-width:0}
+.se-r{display:flex;align-items:center;gap:12px}.se-r span{min-width:104px;font-size:13px;color:var(--ui-mut)}.se-r input[type=range]{flex:1;min-width:0;accent-color:var(--accent)}
+.se-bts{display:flex;gap:6px;flex-wrap:wrap}.se-bts button{flex:1;min-width:92px;padding:9px 8px!important;font-size:12.5px!important}
+.se-l{font-size:12px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;color:var(--ui-mut);margin-top:6px}
+.se-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.se-col{width:28px;height:28px;border-radius:50%;border:2px solid var(--ui-line);cursor:pointer;padding:0}.se-col.on{border-color:var(--accent);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.3)}
+.se-in{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--ui-line);background:var(--ui-card2);color:inherit;font:inherit}
+.se-sw{padding:6px 0!important;min-height:0!important}
+.se-bt{display:flex;gap:10px;justify-content:flex-end;position:sticky;bottom:0;background:var(--ui-panel);padding-top:6px}.se-bt>*{min-width:150px}
+@media (max-width:760px){.se{padding:0;align-items:end}.se-box{border-radius:22px 22px 0 0;max-height:96dvh}.se-body{grid-template-columns:1fr}.se-pv{position:static}.se-bt>*{flex:1;min-width:0}}
+/* 3 · PC: cabecera + clase = UNA sola superficie, sin desenfoques (era lo que cortaba al hacer scroll) */
+@media (min-width:1100px){
+ :root{--frame:color-mix(in srgb,var(--ui-panel) 95%,transparent)}
+ #classView{--frame:color-mix(in srgb,var(--ui-panel) 95%,transparent)}
+ #classShell *,#classView,#classView *,body.in-app header.top,body.in-app header.top *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+ body.in-app:has(#classView:not(.hidden)) header.top{position:relative;isolation:isolate;padding:16px 34px 10px!important}
+ body.in-app:has(#classView:not(.hidden)) header.top::before{content:"";position:absolute;z-index:-1;left:12px;right:12px;top:6px;bottom:0;background:var(--frame);border:1px solid var(--ui-line);border-bottom:0;border-radius:26px 26px 0 0}
+ body.in-app:has(#classView:not(.hidden)) #classShell{padding-top:0!important}
+ body.in-app #classView .hero{background:var(--frame)!important;border:1px solid var(--ui-line)!important;border-bottom:0!important;border-radius:0!important;padding:18px 28px 14px!important;margin:0!important;box-shadow:none!important}
+ body.in-app #classView .layout{background:var(--frame)!important;border:1px solid var(--ui-line)!important;border-radius:0 0 26px 26px!important}
+ #classView .layout{contain:layout style}
+}
+/* 4 · Administrar clase a pantalla completa */
+.adm-class{display:flex;align-items:center;gap:14px;padding:16px;border-radius:20px;background:var(--ui-card);border:1px solid var(--ui-line);margin-bottom:22px}
+.adm-class b{display:block;font-size:19px}.adm-class small{color:var(--ui-mut);font-size:13px}
+.adm-ce{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:28px;color:#fff;flex:none}
+.adm-me .adm-ce{width:46px;height:46px;font-size:23px;border-radius:14px}
+.adm-mem .member{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--ui-line);color:var(--ui-text)}.adm-mem .member:last-child{border-bottom:0}.adm-mem .member small{display:block;color:var(--ui-mut)}
+.stx .cp-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;color:var(--ui-text);border-bottom:1px solid var(--ui-line)}
+.stx .gl-btn.danger{color:#ef4444!important;border-color:rgba(239,68,68,.4)!important}
+.stx .dl-btn{margin:10px 0 0}
+/* retoques Admin */
+.stx-body>.adm-class{width:100%;max-width:800px;box-sizing:border-box}
+.stx .gl-box .cp-row{background:transparent!important;border-radius:0!important;border-left:0!important;border-right:0!important;border-top:0!important;box-shadow:none!important;padding:12px 0!important}
+.stx .gl-box .cp-row:last-child{border-bottom:0!important}
+.stx .gl-box .gl-btn{width:100%;margin:8px 0 0!important}
+.stx .gl-box .dl-btn{margin:10px 0 4px!important}
