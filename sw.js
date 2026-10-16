@@ -1,3 +1,4 @@
+/*! Unuvia 2.0 · © 2026 Unuvia (https://unuvia.es). Todos los derechos reservados / All rights reserved. Prohibido copiar, modificar o redistribuir sin autorización escrita: ver LICENSE. */
 /* Unuvia · service worker
    - Avisos al móvil.
    - Sin conexión: guarda una copia de la web (red primero; si no hay internet, usa la copia).
