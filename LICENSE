@@ -1,0 +1,193 @@
+LICENCIA PROPIETARIA · TODOS LOS DERECHOS RESERVADOS
+PROPRIETARY LICENSE · ALL RIGHTS RESERVED
+
+Unuvia (https://unuvia.es)
+Copyright (c) 2026 [NOMBRE Y APELLIDOS DEL TITULAR]. Todos los derechos reservados.
+
+══════════════════════════════════════════════════════════════════════
+VERSIÓN EN ESPAÑOL (prevalece en caso de duda)
+══════════════════════════════════════════════════════════════════════
+
+ESTO NO ES UNA LICENCIA DE CÓDIGO ABIERTO.
+El contenido de este repositorio se publica únicamente para que la web
+https://unuvia.es pueda funcionar. Que sea visible NO significa que sea libre.
+
+1. NINGÚN PERMISO
+   No se concede ninguna licencia ni derecho sobre el Software, ni expreso ni
+   implícito, ni por el hecho de que esté publicado, ni por la ausencia de
+   medidas técnicas de protección, ni por la tolerancia del titular.
+
+   "Software" es todo el contenido de este repositorio y de https://unuvia.es:
+   el código (HTML, CSS, JavaScript, Service Worker), el diseño y la interfaz,
+   los textos y documentos legales, los iconos e ilustraciones, la mascota
+   "Nuvia" con todos sus accesorios, el logotipo, el nombre y la marca
+   "Unuvia", la estructura de datos, y cualquier versión, copia o derivado.
+
+2. ÚNICOS USOS PERMITIDOS
+   a) Usar la web https://unuvia.es como usuario, conforme a sus Términos y
+      condiciones.
+   b) Leer el código en pantalla para consulta personal (incluida la copia
+      temporal que haga tu navegador al verlo).
+   c) Lo que los Términos de Servicio de GitHub permiten a todos los usuarios de
+      su plataforma: ver y bifurcar (fork) este repositorio DENTRO de GitHub.
+      Esa bifurcación no da ningún derecho de uso, ejecución, publicación ni
+      modificación; la copia sigue sujeta a esta licencia.
+
+3. PROHIBIDO sin autorización previa, expresa, por escrito y firmada por el titular:
+   1) Copiar o reproducir el Software, total o parcialmente, incluidos
+      fragmentos.
+   2) Modificarlo, adaptarlo, traducirlo, combinarlo con otro código o crear
+      obras derivadas.
+   3) Distribuirlo, publicarlo, comunicarlo públicamente, subirlo a otro
+      repositorio, sitio, tienda o servicio, venderlo, alquilarlo, cederlo o
+      sublicenciarlo.
+   4) Instalarlo, ejecutarlo o alojarlo (en local o en un servidor) fuera de la
+      instancia oficial, u ofrecer un servicio, clon o producto similar basado
+      en él, sea de pago o gratuito.
+   5) Usarlo con fines comerciales o no comerciales, incluidos los educativos,
+      de formación, de pruebas o de investigación.
+   6) Hacer ingeniería inversa, descompilar, desofuscar o extraer su
+      funcionamiento, la estructura de la base de datos, las políticas de
+      acceso o la lógica de seguridad para reproducir el servicio o acceder a
+      datos.
+   7) Eliminar o alterar avisos de copyright, marca o autoría.
+   8) Usar el nombre "Unuvia" o "Nuvia", el logotipo, la mascota o su aspecto
+      de modo que pueda confundirse con el original.
+   9) Rastrear (scraping) o descargar de forma automatizada y masiva el
+      repositorio o la web.
+  10) Usar el Software para entrenar, ajustar, evaluar o mejorar modelos de
+      inteligencia artificial o aprendizaje automático, incluirlo en conjuntos
+      de datos, o pedir a una IA que lo reproduzca, reescriba o imite.
+  11) Atacar el servicio o probar sus vulnerabilidades sin permiso (ver
+      cláusula 6).
+
+4. MARCAS
+   Esta licencia no concede derecho alguno sobre las marcas, nombres, logotipos
+   ni la mascota de Unuvia.
+
+5. COMPONENTES DE TERCEROS
+   Quedan excluidos de esta licencia los componentes de otros autores (por
+   ejemplo, la biblioteca supabase-js y los fragmentos de Uiverse.io u otras
+   fuentes, cuya autoría se indica en el código y en el apartado "Propiedad
+   intelectual" de la app). Se rigen por su propia licencia, que prevalece sobre
+   esta en lo que a ellos respecta. El titular no reclama su autoría y esta
+   licencia no limita los derechos que esas licencias te den sobre ellos.
+
+6. SEGURIDAD Y DIVULGACIÓN RESPONSABLE
+   No se autoriza ninguna prueba de intrusión, escaneo intrusivo, ataque o
+   acceso a datos de otros usuarios. Si encuentras una vulnerabilidad, avísalo
+   en privado a unuviasupport@gmail.com, sin acceder a datos de terceros y sin
+   hacerla pública hasta que esté corregida.
+
+7. CONTRIBUCIONES
+   No se aceptan contribuciones. Si aun así envías código, textos, diseños o
+   ideas (pull request, issue, mensaje u otro medio), cedes al titular, en la
+   máxima medida que permita la ley, todos los derechos de explotación sobre
+   ellos, de forma gratuita, irrevocable, en exclusiva y para todo el mundo.
+
+8. INCUMPLIMIENTO
+   Cualquier uso no permitido por esta licencia es una infracción. En ese caso
+   quedan extinguidos automáticamente los permisos de la cláusula 2, debes dejar
+   de usar el Software y destruir todas las copias, y el titular podrá exigir
+   su retirada (incluidos avisos a GitHub, a otros alojamientos y a buscadores),
+   reclamar indemnización por daños y perjuicios y emprender las acciones
+   civiles y penales que correspondan, conforme al Real Decreto Legislativo
+   1/1996 (Ley de Propiedad Intelectual) y a los artículos 270 y siguientes del
+   Código Penal, entre otras normas.
+
+9. SIN GARANTÍA NI RESPONSABILIDAD
+   EL SOFTWARE SE OFRECE "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO. EL TITULAR NO
+   RESPONDE DE DAÑOS DERIVADOS DE SU USO, EN LA MÁXIMA MEDIDA QUE PERMITA LA LEY.
+
+10. LEY Y TRIBUNALES
+    Esta licencia se rige por la legislación española. Para cualquier conflicto,
+    los juzgados y tribunales de [CIUDAD], España, salvo que la ley imponga otro
+    fuero.
+
+11. CÓMO PEDIR PERMISO
+    Escribe a unuviasupport@gmail.com. Un permiso solo es válido si consta por
+    escrito y está firmado por el titular; ninguna respuesta informal, silencio
+    o tolerancia lo sustituye.
+
+══════════════════════════════════════════════════════════════════════
+ENGLISH VERSION (for reference; the Spanish text prevails)
+══════════════════════════════════════════════════════════════════════
+
+THIS IS NOT AN OPEN-SOURCE LICENSE.
+The contents of this repository are published only so that https://unuvia.es
+can run. Being visible does NOT mean being free.
+
+1. NO PERMISSION. No license or right in the Software is granted, express or
+   implied, by the fact that it is published, by the absence of technical
+   protection measures, or by the owner's tolerance. "Software" means all
+   content of this repository and of https://unuvia.es: code (HTML, CSS,
+   JavaScript, Service Worker), design and interface, texts and legal
+   documents, icons and artwork, the "Nuvia" mascot and all its accessories,
+   the logo, the "Unuvia" name and mark, the data structure, and any version,
+   copy or derivative.
+
+2. ONLY PERMITTED USES. (a) Using https://unuvia.es as a user under its Terms
+   and conditions. (b) Reading the code on screen for personal reference
+   (including the temporary copy made by your browser). (c) What GitHub's
+   Terms of Service allow every user of the platform: viewing and forking this
+   repository WITHIN GitHub. Forking grants no right to use, run, publish or
+   modify; the fork remains subject to this license.
+
+3. PROHIBITED without the owner's prior, express, written and signed
+   authorization: (1) copying or reproducing the Software, in whole or in
+   part, including snippets; (2) modifying, adapting, translating, combining
+   or creating derivative works; (3) distributing, publishing, publicly
+   communicating, uploading to another repository, site, store or service,
+   selling, renting, assigning or sublicensing; (4) installing, running or
+   hosting it (locally or on a server) other than the official instance, or
+   offering a similar service, clone or product based on it, paid or free;
+   (5) any commercial or non-commercial use, including educational, training,
+   testing or research use; (6) reverse engineering, decompiling,
+   deobfuscating or extracting its workings, database structure, access
+   policies or security logic to reproduce the service or access data;
+   (7) removing or altering copyright, trademark or authorship notices;
+   (8) using the names "Unuvia" or "Nuvia", the logo, the mascot or their look
+   in a way that may be confused with the original; (9) automated or
+   large-scale scraping or downloading of the repository or the site;
+   (10) using the Software to train, fine-tune, evaluate or improve artificial
+   intelligence or machine-learning models, including it in datasets, or
+   asking an AI to reproduce, rewrite or imitate it; (11) attacking the
+   service or testing its vulnerabilities without permission (see clause 6).
+
+4. TRADEMARKS. No right is granted in the names, marks, logos or mascot of
+   Unuvia.
+
+5. THIRD-PARTY COMPONENTS are excluded from this license (for example the
+   supabase-js library and snippets from Uiverse.io or other sources, whose
+   authorship is credited in the code and in the app's "Intellectual property"
+   section). They are governed by their own licenses, which prevail over this
+   one as far as they are concerned. The owner does not claim their authorship.
+
+6. SECURITY. No intrusive testing, scanning, attack or access to other users'
+   data is authorized. If you find a vulnerability, report it privately to
+   unuviasupport@gmail.com, without accessing third-party data and without
+   disclosing it publicly until it is fixed.
+
+7. CONTRIBUTIONS are not accepted. If you submit code, text, designs or ideas
+   anyway, you assign to the owner, to the fullest extent permitted by law, all
+   exploitation rights in them, free of charge, irrevocably, exclusively and
+   worldwide.
+
+8. BREACH. Any use not permitted by this license is an infringement: the
+   permissions in clause 2 terminate automatically, you must stop using the
+   Software and destroy all copies, and the owner may demand removal (including
+   notices to GitHub, other hosts and search engines), claim damages, and take
+   civil and criminal action under applicable law, including Spanish
+   Intellectual Property law (Real Decreto Legislativo 1/1996) and articles 270
+   et seq. of the Spanish Criminal Code.
+
+9. NO WARRANTY OR LIABILITY. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY
+   OF ANY KIND. TO THE FULLEST EXTENT PERMITTED BY LAW, THE OWNER IS NOT LIABLE
+   FOR ANY DAMAGES ARISING FROM ITS USE.
+
+10. GOVERNING LAW. Spanish law. The courts of [CIUDAD], Spain, have
+    jurisdiction, unless the law imposes another venue.
+
+11. PERMISSIONS. Write to unuviasupport@gmail.com. A permission is valid only
+    if it is in writing and signed by the owner; no informal reply, silence or
+    tolerance replaces it.
