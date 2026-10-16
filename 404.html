@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Unuvia</title>
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<style>html,body{height:100%;margin:0;background:#0b1220;color:#e8edf7;font:16px system-ui,-apple-system,Segoe UI,sans-serif}body{display:grid;place-items:center;text-align:center}small{opacity:.65}</style></head>
+<body><div><b>Abriendo Unuvia…</b><br><small>Si no pasa nada, <a href="/" style="color:#7ab8ff">pulsa aquí</a>.</small></div>
+<script>
+// GitHub Pages enseña esta página cuando la dirección no existe. /panel (y /admin) abren el panel; cualquier otra va a la portada.
+var p=location.pathname.replace(/\/+$/,'').toLowerCase();
+location.replace((p==='/panel'||p==='/admin')?'/#panel':'/');
+</script></body></html>
