@@ -3,7 +3,7 @@
    - Avisos al móvil.
    - Sin conexión: guarda una copia de la web (red primero; si no hay internet, usa la copia).
      Así siempre ves la última versión cuando hay conexión. */
-const CACHE = 'unuvia-v5';
+const CACHE = 'unuvia-v6';
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.webmanifest', '/icon-192.png', '/badge-96.png']).catch(() => {})));
@@ -70,13 +70,26 @@ async function prune(cache, u) {
   }
 }
 
+// Tema actual (lo avisa la página): el aviso del móvil usa el icono del tema. Cache aparte ('uvmeta') para que no se borre al actualizar.
+self.addEventListener('message', e => {
+  const d = e.data || {};
+  if (d.type === 'theme' && /^[a-z]{3,12}$/.test(d.name || '')) e.waitUntil(caches.open('uvmeta').then(c => c.put('/__theme', new Response(d.name))).catch(() => {}));
+});
+async function themeIcon() {
+  try {
+    const r = await (await caches.open('uvmeta')).match('/__theme');
+    const t = r ? await r.text() : '';
+    return t && t !== 'normal' ? 'icons/' + t + '/icon-192.png' : 'icon-192.png';
+  } catch (_) { return 'icon-192.png'; }
+}
+
 self.addEventListener('push', e => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch (x) { d = { body: e.data ? e.data.text() : '' }; }
   const n = unuviaNotif(d);
-  e.waitUntil(self.registration.showNotification(n.title, {
+  e.waitUntil(themeIcon().then(icon => self.registration.showNotification(n.title, {
     body: n.body,
-    icon: 'icon-192.png',
+    icon,
     badge: 'badge-96.png',
     lang: 'es',
     timestamp: Date.now(),
@@ -84,7 +97,7 @@ self.addEventListener('push', e => {
     tag: d.tag || undefined,
     renotify: !!d.tag,
     data: { url: d.url || '/' }
-  }));
+  })));
 });
 
 /* Diseño del aviso: «Unuvia» primero; debajo, el icono del tipo + la clase, y después el mensaje.

@@ -333,3 +333,24 @@ html[data-season=carnaval] .tx-t:nth-child(even):active{transform:rotate(1.5deg)
 .am-card,.am-card.anchored,.am-card .nz-item{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 .am-card{backface-visibility:hidden;transform-style:flat}
 html.am-open :is(#szBack,#szHdr,#szBack *,#szHdr *,.aurora i,.aurora b,.comet){animation-play-state:paused!important}
+
+/* ---------- Cabeceras de sección: que el botón baje a la línea siguiente en vez de salirse (títulos anchos de algunos temas) ---------- */
+#classView .view>.head{flex-wrap:wrap;gap:8px 12px}
+#classView .view>.head>div:first-child{flex:1 1 140px;min-width:0}
+#classView .view>.head :is(h2,h3,p){overflow-wrap:anywhere}
+
+/* ---------- Nombre de la clase: máximo 3 líneas, sin partir palabras a la mitad ---------- */
+#classView .hero #className{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;overflow-wrap:break-word;word-break:normal;hyphens:auto;-webkit-hyphens:auto}
+@media (max-width:699px){
+  #classView .hero h1{font-size:clamp(21px,6.2vw,30px);line-height:1.14}
+  html[data-season=halloween] #classView .hero h1,html[data-season=carnaval] #classView .hero h1{letter-spacing:0}
+}
+
+/* ---------- Generar preguntas con Gemini (profesores) ---------- */
+.ai-gem{display:flex;flex-direction:column;gap:8px;padding:14px;margin:14px 0 0;border-radius:16px;border:1px solid rgba(var(--accent-rgb),.35);background:linear-gradient(135deg,rgba(var(--accent-rgb),.14),rgba(var(--accent-rgb),.04))}
+.ai-gem>b{font-size:14.5px}
+.ai-gem>small{color:var(--ui-mut);font-size:12.5px;line-height:1.45}
+.ai-gem .add{align-self:flex-start;padding:10px 16px;font-size:13px}
+.ai-gem .add:disabled{opacity:.65;cursor:progress}
+.ai-or{display:flex;align-items:center;gap:10px;color:var(--ui-mut);font-size:12px;margin:12px 0 4px}
+.ai-or:before,.ai-or:after{content:"";flex:1;height:1px;background:var(--ui-line)}

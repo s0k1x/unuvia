@@ -1,0 +1,33 @@
+{
+  "name": "Unuvia",
+  "short_name": "Unuvia",
+  "description": "Tu aula, organizada",
+  "id": "/",
+  "start_url": "/?src=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#12062a",
+  "theme_color": "#12062a",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icons/carnaval/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/carnaval/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/carnaval/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
