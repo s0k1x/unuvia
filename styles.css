@@ -318,13 +318,10 @@ html[data-season=carnaval] .tx-t:nth-child(odd):active{transform:rotate(-1.5deg)
 html[data-season=carnaval] .tx-t:nth-child(even):active{transform:rotate(1.5deg) scale(.97)}
 @keyframes uvPop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 
-/* ---------- Banner de la clase (escritorio): de borde a borde, sin redondeos, ocupando todo el ancho ---------- */
+/* ---------- Banner de la clase (escritorio): capa de ancho completo (#classBg, la coloca app.js); el título y el código quedan alineados con el contenido ---------- */
 @media (min-width:1100px){
-  body.hasbn #classBg{display:none!important}
-  html.cv-on #classView .hero.hasbanner{width:100vw;margin:0 calc(50% - 50vw) 8px!important;padding:26px max(24px,calc(50vw - 696px)) 22px!important;border:0!important;border-radius:0!important;overflow:hidden;min-height:116px!important;background:var(--ui-panel)!important;box-shadow:none!important}
-  html.cv-on #classView .hero.hasbanner:before{opacity:1!important;-webkit-mask-image:none!important;mask-image:none!important;background:var(--bn) center/cover no-repeat!important;filter:none!important;top:0!important;right:0!important;bottom:0!important;left:0!important}
-  html.cv-on #classView .hero.hasbanner:after{content:""!important;display:block!important;position:absolute;inset:0;z-index:-1;pointer-events:none;
-    background:linear-gradient(90deg,color-mix(in srgb,var(--ui-panel) 97%,transparent) 0,color-mix(in srgb,var(--ui-panel) 90%,transparent) 48%,color-mix(in srgb,var(--ui-panel) 62%,transparent) 100%)}
+  html.cv-on #classView .hero.hasbanner{margin:0 0 8px!important;padding:26px 24px 22px!important;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;min-height:116px!important;overflow:visible}
+  html.cv-on #classView .hero.hasbanner:before,html.cv-on #classView .hero.hasbanner:after{display:none!important}
   html.cv-on #classView .hero.hasbanner .code{background:color-mix(in srgb,var(--ui-panel) 92%,transparent)!important}
   html.cv-on #classView .hero.hasbanner p{color:var(--ui-text)!important;opacity:.82}
 }
@@ -422,3 +419,115 @@ html[data-season]:not([data-season=normal]) .tx-f.tx-ai{background:linear-gradie
   body.printing .uv-wm-in{display:none}
   body.printing .ad-sheet{font-size:12pt}
 }
+
+
+/* ---------- Pantallas anchas (PC): los cuadros usan el ancho en horizontal en vez de una columna estrecha ---------- */
+@media (min-width:980px){
+  #modal .modalbox.m-land{width:min(1120px,calc(100vw - 72px))!important;max-width:none!important}
+  #modal .modalbox.m-land-s{width:min(800px,calc(100vw - 72px))!important;max-width:none!important}
+
+  /* formularios sencillos: los campos van de dos en dos */
+  #modal .modalbox.m-land-s #modalFields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px;align-items:start}
+  #modal .modalbox.m-land-s #modalFields>*{grid-column:1/-1}
+  #modal .modalbox.m-land-s #modalFields>:is(input:not([type=hidden]),select,.bsel){grid-column:auto}
+
+  /* listados: cualquier contenedor con tarjetas repetidas se reparte en columnas */
+  #modal .modalbox.m-land #modalFields :is(div,section):has(>.ex-it,>.bk-it,>.gr-it,>.lb-it,>.bz-it,>.sc-cl,>.dm-p,>.att-row,>.pr-t,>.todo-row,>.pt-rk,>.cd-it){display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:10px 16px;align-items:start}
+  #modal .modalbox.m-land #modalFields :is(div,section):has(>.ex-it,>.bk-it,>.gr-it,>.lb-it,>.bz-it,>.sc-cl,>.dm-p,>.att-row,>.pr-t,>.todo-row,>.pt-rk,>.cd-it)>*{grid-column:1/-1}
+  #modal .modalbox.m-land #modalFields :is(div,section):has(>.ex-it,>.bk-it,>.gr-it,>.lb-it,>.bz-it,>.sc-cl,>.dm-p,>.att-row,>.pr-t,>.todo-row,>.pt-rk,>.cd-it)>:is(.ex-it,.bk-it,.gr-it,.lb-it,.bz-it,.sc-cl,.dm-p,.att-row,.pr-t,.todo-row,.pt-rk,.cd-it){grid-column:auto;margin:0}
+
+  /* editor de exámenes: ajustes a la izquierda, preguntas a la derecha */
+  .ex-cols{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(0,1.4fr);gap:0 34px;align-items:start}
+  .ex-c1{position:sticky;top:0}
+  .ex-edit .ex-c2 .lv-btns.col{grid-template-columns:1fr 1fr}
+  .ex-edit .ex-c2 .lv-btns.col>.add{grid-column:1/-1}
+
+  /* examen que hace el alumno y pantalla de corrección: más anchos */
+  .exr-in{max-width:980px}
+  .qg .exr-in{max-width:1080px}
+}
+
+/* ===== Herramientas v2 ===== */
+/* Vista de herramientas: las descripciones se ven también en el móvil */
+.tx-t small{display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal!important;line-height:1.3}
+.tx-t{align-items:flex-start}
+.tx-gai .tx-t{border-color:rgba(14,165,233,.4);background:linear-gradient(135deg,rgba(14,165,233,.12),rgba(99,102,241,.08))}
+.tx-gai h5 em{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-left:6px;padding:2px 7px;border-radius:99px;background:rgba(14,165,233,.18);color:#38bdf8}
+.tx-em{font-size:20px;line-height:1}
+.tx-rc .tx-chips{display:flex;flex-wrap:wrap;gap:6px}
+.tx-rc .chip{display:inline-flex;align-items:center;gap:6px;padding:8px 12px}
+.tx-rc .chip svg{width:15px;height:15px}
+
+/* Ruleta */
+.ru{width:100%!important;max-width:none;margin:0!important;position:static}
+.ru-stage{position:relative;width:min(300px,82vw);margin:12px auto 4px}
+.ru-one{display:flex;flex-direction:column;align-items:center;gap:8px;padding:24px;border-radius:20px;background:var(--ui-card2);border:1px solid var(--ui-line);margin:6px 0}
+.ru-one b{font-size:30px;font-weight:900;text-align:center}
+.ru-one small{color:var(--ui-mut)}
+.ru-who{margin-top:16px;padding-top:12px;border-top:1px solid var(--ui-line);display:flex;flex-direction:column;gap:8px}
+.ru-wh{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ru-links{display:flex;gap:6px}
+.ru-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ru-chips .chip{padding:7px 12px}
+.ru-chips .chip:not(.on){opacity:.5;text-decoration:line-through}
+.chip.done{outline:2px solid rgba(34,197,94,.6)}
+.ru .ru-go[disabled]{opacity:.6}
+@media (min-width:980px){.ru-stage{width:340px}}
+
+/* Marcador de equipos */
+.bd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.bd-t{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 12px 12px;border-radius:18px;background:color-mix(in srgb,var(--tc) 14%,var(--ui-card2));border:2px solid color-mix(in srgb,var(--tc) 55%,transparent)}
+.bd-t.lead{box-shadow:0 0 0 3px color-mix(in srgb,var(--tc) 35%,transparent),0 10px 26px color-mix(in srgb,var(--tc) 30%,transparent)}
+.bd-n{width:100%;text-align:center;font-size:15px;font-weight:800;background:transparent!important;border:0!important;border-bottom:1px dashed var(--ui-line)!important;border-radius:0!important;padding:4px!important;margin:0!important;color:var(--ui-text)}
+.bd-p{font-size:64px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.bd-b{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
+.bd-b button{min-height:44px;border-radius:12px;border:0;font-weight:900;font-size:16px;background:#ffffff1a;color:var(--ui-text);cursor:pointer}
+.bd-b .p{background:var(--tc);color:#fff}
+.bd-b button:active{transform:scale(.95)}
+.bd-x{position:absolute;top:4px;right:8px;border:0;background:transparent;color:var(--ui-mut);font-size:20px;cursor:pointer;width:28px;height:28px}
+.bd-cr{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:22px}
+.bd-a{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.bd.big .bd-p{font-size:110px}
+.bd.big .bd-n{font-size:20px}
+.bd.big .bd-b button{min-height:56px;font-size:20px}
+
+/* Horario: por días en el móvil, y creación automática de franjas */
+.tt2{display:flex;flex-direction:column;gap:12px}
+.tt2-days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.tt2-d{position:relative;border:0;border-radius:12px;padding:12px 0;font-weight:800;font-size:13.5px;background:#ffffff12;color:var(--ui-mut);cursor:pointer}
+.tt2-d.on{background:var(--accent);color:#fff}
+.tt2-d i{position:absolute;top:3px;right:5px;font-style:normal;font-size:10px;background:rgba(0,0,0,.28);color:#fff;border-radius:99px;padding:0 5px;line-height:15px}
+.tt2-rows{display:flex;flex-direction:column;gap:8px}
+.tt2-r{display:grid;grid-template-columns:92px minmax(0,1fr) 76px 36px;gap:6px;align-items:center}
+.tt2-r input{width:100%;min-width:0;box-sizing:border-box;margin:0;padding:12px 10px;border-radius:12px;font-size:14px}
+.tt2-r .tt-t{font-weight:700}
+.tt2-r .tt-r{font-size:13px}
+.tt2-cp{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--ui-mut)}
+.tt2-bar{display:flex;flex-wrap:wrap;gap:8px}
+.tt2-gen{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:16px;border:1px solid rgba(var(--accent-rgb),.35);background:rgba(var(--accent-rgb),.08)}
+.tt2-gen small{color:var(--ui-mut)}
+@media (max-width:400px){.tt2-r{grid-template-columns:84px minmax(0,1fr) 62px 32px}.tt2-r input{padding:11px 8px;font-size:13.5px}}
+
+/* Asistente IA más claro */
+.iax-sec{display:flex;flex-direction:column;gap:6px}
+.iax-sec>b{font-size:13.5px}
+.iax-sec small{color:var(--ui-mut);font-weight:600}
+.iax-d{margin:0;color:var(--ui-mut);font-size:13px}
+.iax-n{display:flex;flex-direction:column;gap:6px}
+.iax-st{display:flex;align-items:center;gap:6px}
+.iax-st input{width:64px!important;text-align:center;margin:0!important}
+.iax-st button{width:42px;height:42px;border-radius:12px;border:0;background:#ffffff14;color:var(--ui-text);font-size:20px;font-weight:800;cursor:pointer}
+.iax-st button:active{transform:scale(.94)}
+.iax-more summary{cursor:pointer;font-weight:700;font-size:13.5px;padding:8px 0}
+.iax-more textarea{margin-top:6px}
+.iax-go{width:100%}
+.iax-wait{display:flex;gap:12px;align-items:center}
+.iax-wait small{display:block;color:var(--ui-mut)}
+.iax-sp{width:26px;height:26px;border-radius:50%;border:3px solid rgba(var(--accent-rgb),.25);border-top-color:var(--accent);animation:iaxSpin .8s linear infinite;flex:none}
+@keyframes iaxSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.iax-sp{animation-duration:2.4s}}
+
+/* Centro educativo: cursos */
+.sc-course{margin-top:14px;color:var(--accent-text,var(--accent))}
+.tt2-bar>button,.bd-a>button,.tt2-gen>.add{width:auto;flex:0 0 auto}
+.tt2-gen>.add{align-self:flex-start}
