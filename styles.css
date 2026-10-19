@@ -68,8 +68,8 @@ html:not(.light) .tx-mod.on{color:#4ade80}
 .tx-grid>.tx-t:last-child:nth-child(odd){grid-column:1/-1}
 @media (min-width:700px){.tx-grid{gap:10px}.tx-t{min-height:62px;padding:11px 14px}.tx-t small{display:block}.tx-feat{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}}
 /* una sola entrada coordinada al abrir Herramientas */
-.view.active .tx-f,.view.active .tx-t{animation:txIn .44s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*24ms)}
-@keyframes txIn{from{opacity:0;transform:translateY(10px) scale(.98)}}
+.view.active .tx-f,.view.active .tx-t{animation:txIn .38s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i,0)*18ms)}
+@keyframes txIn{from{transform:translate3d(0,8px,0) scale(.985)}}
 
 /* ---------- 5a) Movimiento general ---------- */
 .view.active{animation:var(--k-view,uvView) var(--k-dur,.38s) var(--k-ease,cubic-bezier(.2,.8,.2,1)) both!important}
@@ -78,7 +78,6 @@ html:not(.light) .tx-mod.on{color:#4ade80}
 :is(.add,.primary,.secondary,.mini-btn,.tx-mod):active{transform:scale(.96)}
 :is(button,a,[role=button]){-webkit-tap-highlight-color:transparent}
 :is(button,a,input,textarea,select,[role=button]):focus-visible{outline:2px solid rgba(var(--accent-rgb),.85)!important;outline-offset:2px}
-html.cv-on #classView .layout>main>.content{scroll-behavior:smooth}
 /* cambio de tema: se revela desde la esquina */
 ::view-transition-old(root){animation:none}
 ::view-transition-new(root){animation:uvThemeIn .75s cubic-bezier(.2,.8,.2,1) both}
@@ -188,7 +187,7 @@ html[data-season=halloween]{
   --k-btn:linear-gradient(180deg,#ff8f3a,#f06a0c);--k-btn-sh:0 4px 0 #8a3a00,0 10px 24px rgba(255,122,26,.32);--k-btn-sha:0 1px 0 #8a3a00;--k-press:translateY(3px);
   --k-btnf:Impact,Haettenschweiler,"Arial Narrow Bold",system-ui,sans-serif;--k-btn-ls:.06em;--k-btn-tt:uppercase;
   --k-tab-bg:rgba(255,122,26,.14);--k-tab-sh:0 0 18px rgba(255,122,26,.25);
-  --k-view:uvFlicker;--k-dur:.5s;--k-ease:linear;--k-menu-dur:420;--k-menu-ease:cubic-bezier(.3,1.4,.5,1);
+  --k-view:uvFlicker;--k-dur:.34s;--k-ease:cubic-bezier(.2,.8,.2,1);--k-menu-dur:420;--k-menu-ease:cubic-bezier(.3,1.4,.5,1);
   --k-feat1:linear-gradient(140deg,#7c3aed,#3b0f6e);--k-feat2:linear-gradient(140deg,#ff7a1a,#b23c00);--k-feat-c:#fff
 }
 html.light[data-season=halloween]{
@@ -199,7 +198,7 @@ html.light[data-season=halloween]{
   --k-card-sh:0 0 0 1px rgba(124,58,237,.10),0 16px 40px rgba(70,30,110,.12);
   --k-btn:linear-gradient(180deg,#f47a26,#d9580a);--k-btn-sh:0 4px 0 #8f3b05,0 10px 22px rgba(226,98,11,.25);--k-btn-sha:0 1px 0 #8f3b05;--k-tab-sh:none
 }
-@keyframes uvFlicker{0%{opacity:0;transform:translateY(4px)}18%{opacity:.75}28%{opacity:.35}42%{opacity:.9}52%{opacity:.55}100%{opacity:1;transform:none}}
+@keyframes uvFlicker{from{opacity:0;transform:translate3d(0,8px,0)}to{opacity:1;transform:none}}
 
 /* ==================== SAN VALENTÍN · todo redondo y suave ==================== */
 html[data-season=valentin]{
@@ -221,7 +220,7 @@ html.light[data-season=valentin]{
   --k-card-bg:rgba(255,255,255,.94);--k-menu-bg:#fff;--k-card-sh:0 14px 40px rgba(225,29,92,.12);
   --k-btn:linear-gradient(135deg,#f43f75,#e11d5c);--k-btn-sh:0 10px 24px rgba(225,29,92,.3);--k-tab-sh:0 8px 18px rgba(225,29,92,.28)
 }
-@keyframes uvBeat{0%{opacity:0;transform:scale(.94)}60%{opacity:1;transform:scale(1.012)}100%{transform:none}}
+@keyframes uvBeat{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
 
 /* ==================== PRIMAVERA · formas de hoja ==================== */
 html[data-season=primavera]{
@@ -243,7 +242,7 @@ html.light[data-season=primavera]{
   --k-card-bg:rgba(255,255,253,.95);--k-menu-bg:#fff;--k-card-sh:0 16px 36px rgba(30,80,40,.10);
   --k-btn:linear-gradient(135deg,#2fae6b,#1e8a52);--k-btn-sh:0 8px 20px rgba(35,149,90,.25)
 }
-@keyframes uvBloom{from{opacity:0;transform:scale(.97) rotate(-.6deg);transform-origin:0 0}}
+@keyframes uvBloom{from{opacity:0;transform:scale(.97);transform-origin:50% 0}}
 
 /* ==================== VERANO · bordes gruesos y sombras duras ==================== */
 html[data-season=verano]{
@@ -288,7 +287,7 @@ html.light[data-season=otono]{
   --k-card-sh:inset 4px 0 0 rgba(200,60,50,.45),0 14px 32px rgba(90,50,20,.12);
   --k-btn:#c2551f;--k-btn-sh:inset 0 -3px 0 rgba(0,0,0,.2),0 6px 14px rgba(194,85,31,.2)
 }
-@keyframes uvSway{0%{opacity:0;transform:translateX(-10px) rotate(-1.2deg);transform-origin:0 0}60%{opacity:1;transform:rotate(.3deg)}100%{transform:none}}
+@keyframes uvSway{from{opacity:0;transform:translate3d(-10px,0,0)}to{opacity:1;transform:none}}
 
 /* ==================== CARNAVAL · confeti y formas giradas ==================== */
 html[data-season=carnaval]{
@@ -317,7 +316,7 @@ html[data-season=carnaval] .tx-i svg{transform:rotate(-45deg)}
 html[data-season=carnaval] .tx-t:nth-child(3n){--hr:34,227,211!important}
 html[data-season=carnaval] .tx-t:nth-child(odd):active{transform:rotate(-1.5deg) scale(.97)}
 html[data-season=carnaval] .tx-t:nth-child(even):active{transform:rotate(1.5deg) scale(.97)}
-@keyframes uvPop{0%{opacity:0;transform:scale(.9) rotate(-2deg)}100%{opacity:1;transform:none}}
+@keyframes uvPop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
 
 /* ---------- Banner de la clase (escritorio): una sola imagen, nítida y con bordes claros, sin franja difuminada ---------- */
 @media (min-width:1100px){
@@ -329,3 +328,8 @@ html[data-season=carnaval] .tx-t:nth-child(even):active{transform:rotate(1.5deg)
   html.cv-on #classView .hero.hasbanner .code{background:color-mix(in srgb,var(--ui-panel) 92%,transparent)!important}
   html.cv-on #classView .hero.hasbanner p{color:var(--ui-text)!important;opacity:.82}
 }
+
+/* ---------- Menú más fluido ---------- */
+.am-card,.am-card.anchored,.am-card .nz-item{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.am-card{backface-visibility:hidden;transform-style:flat}
+html.am-open :is(#szBack,#szHdr,#szBack *,#szHdr *,.aurora i,.aurora b,.comet){animation-play-state:paused!important}
