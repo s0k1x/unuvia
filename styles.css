@@ -318,3 +318,14 @@ html[data-season=carnaval] .tx-t:nth-child(3n){--hr:34,227,211!important}
 html[data-season=carnaval] .tx-t:nth-child(odd):active{transform:rotate(-1.5deg) scale(.97)}
 html[data-season=carnaval] .tx-t:nth-child(even):active{transform:rotate(1.5deg) scale(.97)}
 @keyframes uvPop{0%{opacity:0;transform:scale(.9) rotate(-2deg)}100%{opacity:1;transform:none}}
+
+/* ---------- Banner de la clase (escritorio): una sola imagen, nítida y con bordes claros, sin franja difuminada ---------- */
+@media (min-width:1100px){
+  body.hasbn #classBg{display:none!important}
+  html.cv-on #classView .hero.hasbanner{margin:10px 12px 6px!important;padding:22px 26px!important;border:1px solid var(--ui-line)!important;border-radius:22px!important;overflow:hidden;min-height:104px!important;background:var(--ui-panel)!important}
+  html.cv-on #classView .hero.hasbanner:before{opacity:1!important;-webkit-mask-image:none!important;mask-image:none!important;background:var(--bn) center/cover no-repeat!important;filter:none!important}
+  html.cv-on #classView .hero.hasbanner:after{content:""!important;display:block!important;position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(90deg,color-mix(in srgb,var(--ui-panel) 97%,transparent) 0,color-mix(in srgb,var(--ui-panel) 90%,transparent) 48%,color-mix(in srgb,var(--ui-panel) 62%,transparent) 100%)}
+  html.cv-on #classView .hero.hasbanner .code{background:color-mix(in srgb,var(--ui-panel) 92%,transparent)!important}
+  html.cv-on #classView .hero.hasbanner p{color:var(--ui-text)!important;opacity:.82}
+}
