@@ -1,11 +1,78 @@
 <!doctype html>
 <!-- Unuvia 2.0 · © 2026 Unuvia (https://unuvia.es). Todos los derechos reservados / All rights reserved. Prohibido copiar, modificar o redistribuir sin autorización escrita: ver LICENSE. -->
-<html lang="es"><head><meta charset="utf-8"><title>Unuvia</title>
-<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
-<style>html,body{height:100%;margin:0;background:#0b1220;color:#e8edf7;font:16px system-ui,-apple-system,Segoe UI,sans-serif}body{display:grid;place-items:center;text-align:center}small{opacity:.65}</style></head>
-<body><div><b>Abriendo Unuvia…</b><br><small>Si no pasa nada, <a href="/" style="color:#7ab8ff">pulsa aquí</a>.</small></div>
+<html lang="es"><head><meta charset="utf-8"><title>Unuvia · Página no encontrada</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex">
+<meta name="theme-color" content="#070b14"><link rel="icon" href="/icon-192.png">
+<style>
+:root{--bg:#070b14;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--text:#eef2fb;--mut:#9aa7bd;--a:#008cff;--b:#6366f1}
+@media (prefers-color-scheme:light){:root{--bg:#f2f5fb;--card:rgba(255,255,255,.88);--line:rgba(15,23,42,.12);--text:#0f172a;--mut:#5b6b85}}
+html[data-mode=dark]{--bg:#070b14;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.12);--text:#eef2fb;--mut:#9aa7bd}
+html[data-mode=light]{--bg:#f2f5fb;--card:rgba(255,255,255,.88);--line:rgba(15,23,42,.12);--text:#0f172a;--mut:#5b6b85}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{display:grid;place-items:center;padding:24px;color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;
+ background:radial-gradient(900px 520px at 85% -10%,color-mix(in srgb,var(--a) 22%,transparent),transparent 60%),radial-gradient(800px 500px at 0% 110%,color-mix(in srgb,var(--b) 20%,transparent),transparent 60%),var(--bg)}
+.card{width:min(460px,100%);padding:34px 26px 26px;border-radius:28px;background:var(--card);border:1px solid var(--line);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.logo{position:relative;width:104px;height:104px;margin:0 auto 6px}
+.logo img{position:relative;z-index:1;width:104px;height:104px;border-radius:26px;display:block;box-shadow:0 10px 30px rgba(0,0,0,.35);animation:float 4.5s ease-in-out infinite}
+.glow{position:absolute;inset:-18px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--a) 55%,transparent),transparent);filter:blur(10px);animation:pulse 4.5s ease-in-out infinite}
+.code{font-size:84px;font-weight:900;line-height:1;letter-spacing:.02em;margin:10px 0 2px;background:linear-gradient(135deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+h1{margin:0 0 8px;font-size:23px;font-weight:800}
+p{margin:0 0 20px;color:var(--mut);font-size:15px}
+p b{color:var(--text);font-weight:700;word-break:break-all}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 22px;border-radius:999px;border:1px solid var(--line);font:inherit;font-weight:700;text-decoration:none;cursor:pointer;color:var(--text);background:transparent}
+.btn.pri{border:0;color:#fff;background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 10px 26px color-mix(in srgb,var(--a) 40%,transparent)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible,a:focus-visible{outline:2px solid var(--a);outline-offset:3px}
+small{display:block;margin-top:22px;color:var(--mut);font-size:12.5px;letter-spacing:.02em}
+small a{color:var(--a)}
+.spin{width:34px;height:34px;margin:18px auto 14px;border-radius:50%;border:3px solid color-mix(in srgb,var(--a) 25%,transparent);border-top-color:var(--a);animation:spin .9s linear infinite}
+#ld{display:none}
+body.loading #nf{display:none}
+body.loading #ld{display:block}
+@keyframes float{50%{transform:translateY(-7px)}}
+@keyframes pulse{50%{opacity:.55;transform:scale(1.08)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.logo img,.glow{animation:none}.spin{animation-duration:2.4s}}
+</style></head>
+<body>
+<main class="card" id="nf">
+ <div class="logo"><span class="glow"></span><img alt="" width="104" height="104" src="/icon-192.png"></div>
+ <div class="code" aria-hidden="true">404</div>
+ <h1>Esta página se ha perdido</h1>
+ <p>No hemos encontrado <b id="path">esta dirección</b>. Puede que esté mal escrita o que la página ya no exista.</p>
+ <div class="actions"><a class="btn pri" href="/">Ir a Unuvia</a><button class="btn" id="back" type="button" hidden>Volver atrás</button></div>
+ <small>Unuvia · Tu aula, organizada</small>
+</main>
+<main class="card" id="ld" aria-live="polite">
+ <div class="logo"><span class="glow"></span><img alt="" width="104" height="104" src="/icon-192.png"></div>
+ <div class="spin" role="progressbar" aria-label="Cargando"></div>
+ <h1 id="loadT">Abriendo Unuvia…</h1>
+ <small>Si no pasa nada, <a id="lk" href="/">pulsa aquí</a>.</small>
+</main>
 <script>
-// GitHub Pages enseña esta página cuando la dirección no existe. /panel (y /admin) abren el panel; cualquier otra va a la portada.
-var p=location.pathname.replace(/\/+$/,'').toLowerCase();
-location.replace((p==='/panel'||p==='/admin')?'/#panel':'/');
-</script></body></html>
+(function(){
+ var d=document.documentElement,t='normal',m='';
+ try{t=localStorage.getItem('unuvia_icon')||'normal';m=localStorage.getItem('unuvia_theme')||''}catch(e){}
+ var TH={normal:['#008cff','#6366f1'],navidad:['#e0b84c','#d2463f'],halloween:['#ff7a1a','#9b5cff'],valentin:['#ff4f84','#ffb3c8'],primavera:['#5fd38a','#f59ac1'],verano:['#ffb020','#22d3ee'],otono:['#f08a3c','#c9442a'],carnaval:['#ffd60a','#ff2e88']};
+ var c=TH[t]||TH.normal; d.style.setProperty('--a',c[0]); d.style.setProperty('--b',c[1]);
+ if(m==='light'||m==='dark')d.setAttribute('data-mode',m);
+ var src=(TH[t]&&t!=='normal')?'/icons/'+t+'/icon-192.png':'/icon-192.png';
+ var imgs=document.querySelectorAll('.logo img'); for(var i=0;i<imgs.length;i++){imgs[i].src=src; imgs[i].onerror=function(){this.onerror=null;this.src='/icon-192.png'}}
+ // GitHub Pages enseña esta página cuando la dirección no existe.
+ // /panel y /admin abren el panel; /index.html y similares abren la portada; el resto es un 404 de verdad.
+ var p=location.pathname.replace(/\/+$/,'').toLowerCase()||'/';
+ var go=(p==='/panel'||p==='/admin')?'/#panel':(p==='/index.html'||p==='/index'||p==='/app'||p==='/inicio')?'/':null;
+ if(go){
+  document.body.className='loading';
+  document.getElementById('loadT').textContent=go==='/#panel'?'Abriendo el panel de Unuvia…':'Abriendo Unuvia…';
+  document.getElementById('lk').href=go;
+  setTimeout(function(){location.replace(go)},350);
+  return;
+ }
+ document.getElementById('path').textContent=(location.pathname+location.search).slice(0,80);
+ var b=document.getElementById('back'); if(history.length>1){b.hidden=false;b.onclick=function(){history.back()}}
+})();
+</script>
+</body></html>

@@ -3,7 +3,7 @@
    - Avisos al móvil.
    - Sin conexión: guarda una copia de la web (red primero; si no hay internet, usa la copia).
      Así siempre ves la última versión cuando hay conexión. */
-const CACHE = 'unuvia-v6';
+const CACHE = 'unuvia-v7';
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.webmanifest', '/icon-192.png', '/badge-96.png']).catch(() => {})));
@@ -20,6 +20,7 @@ addEventListener('fetch', e => {
   const u = new URL(r.url);
   const same = u.origin === self.location.origin, cdn = u.hostname === 'cdn.jsdelivr.net';
   if (!same && !cdn) return;                       // la base de datos y los archivos de Supabase nunca se guardan aquí
+  if (same && u.pathname === '/version.json') return;   // el aviso de «hay una versión nueva» siempre va directo a la red, sin copia
   const versioned = same && u.searchParams.has('v') && /\.(?:js|css)$/.test(u.pathname);   // app.js?v=… y styles.css?v=…: cada versión tiene su propia dirección
   const asset = same && /\.(?:png|webp|jpe?g|svg|ico|woff2?)$/.test(u.pathname);
   // IMPORTANTE: waitUntil se llama AQUÍ, de forma síncrona. Llamarlo más tarde (dentro de la promesa) lo rechaza Safari en iPhone
@@ -44,7 +45,8 @@ addEventListener('fetch', e => {
       }
       // La página y el resto: red primero (así siempre ves la última versión) y, sin internet, la copia
       try {
-        const res = await fetch(r);
+        // Las páginas se piden «revalidando»: GitHub Pages las guarda 10 minutos y así la versión nueva tardaría en llegar
+        const res = await fetch(r, r.mode === 'navigate' ? { cache: 'no-cache' } : undefined);
         if (res && res.ok) cache.put(r, res.clone()).catch(() => {});
         return res;
       } catch (err) {
