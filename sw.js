@@ -3,7 +3,7 @@
    - Avisos al móvil.
    - Sin conexión: guarda una copia de la web (red primero; si no hay internet, usa la copia).
      Así siempre ves la última versión cuando hay conexión. */
-const CACHE = 'unuvia-v7';
+const CACHE = 'unuvia-v8';
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.webmanifest', '/icon-192.png', '/badge-96.png']).catch(() => {})));
@@ -76,6 +76,11 @@ async function prune(cache, u) {
 self.addEventListener('message', e => {
   const d = e.data || {};
   if (d.type === 'theme' && /^[a-z]{3,12}$/.test(d.name || '')) e.waitUntil(caches.open('uvmeta').then(c => c.put('/__theme', new Response(d.name))).catch(() => {}));
+  if (d.type === 'prefs') {
+    const q = d.quiet || {};
+    const clean = { muted: (Array.isArray(d.muted) ? d.muted : []).slice(0, 60).map(x => String(x).slice(0, 60)), quiet: { on: !!q.on, from: /^\d{2}:\d{2}$/.test(q.from) ? q.from : '22:00', to: /^\d{2}:\d{2}$/.test(q.to) ? q.to : '07:00' } };
+    e.waitUntil(caches.open('uvmeta').then(c => c.put('/__prefs', new Response(JSON.stringify(clean)))).catch(() => {}));
+  }
 });
 async function themeIcon() {
   try {
@@ -85,21 +90,41 @@ async function themeIcon() {
   } catch (_) { return 'icon-192.png'; }
 }
 
+// Preferencias de avisos (la página las guarda aquí): clases silenciadas y horas de silencio
+async function uvPrefs() { try { const c = await caches.open('uvmeta'); const r = await c.match('/__prefs'); return r ? await r.json() : null; } catch (_) { return null; } }
+function uvMin(s) { const p = String(s).split(':'); return (+p[0] || 0) * 60 + (+p[1] || 0); }
+// ¿Este aviso debe llegar en silencio (sin sonido ni vibración)?
+function uvSilent(p, cls, now) {
+  if (!p) return false;
+  const c = String(cls || '').trim().toLowerCase();
+  if (c && (Array.isArray(p.muted) ? p.muted : []).some(m => String(m).trim().toLowerCase() === c)) return true;
+  const q = p.quiet;
+  if (q && q.on && /^\d{2}:\d{2}$/.test(q.from) && /^\d{2}:\d{2}$/.test(q.to)) {
+    const m = now.getHours() * 60 + now.getMinutes(), f = uvMin(q.from), t = uvMin(q.to);
+    if (f === t) return false;
+    return f < t ? (m >= f && m < t) : (m >= f || m < t);
+  }
+  return false;
+}
 self.addEventListener('push', e => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch (x) { d = { body: e.data ? e.data.text() : '' }; }
   const n = unuviaNotif(d);
-  e.waitUntil(themeIcon().then(icon => self.registration.showNotification(n.title, {
-    body: n.body,
-    icon,
-    badge: 'badge-96.png',
-    lang: 'es',
-    timestamp: Date.now(),
-    vibrate: [70, 40, 70],
-    tag: d.tag || undefined,
-    renotify: !!d.tag,
-    data: { url: d.url || '/' }
-  })));
+  const cls = d.v === 2 ? (d.cls || '') : (d.title && d.title !== 'Unuvia' ? d.title : '');
+  e.waitUntil(Promise.all([themeIcon(), uvPrefs()]).then(([icon, prefs]) => {
+    const quiet = uvSilent(prefs, cls, new Date());
+    return self.registration.showNotification(n.title, {
+      body: n.body,
+      icon,
+      badge: 'badge-96.png',
+      lang: 'es',
+      timestamp: Date.now(),
+      ...(quiet ? { silent: true } : { vibrate: [70, 40, 70] }),
+      tag: d.tag || undefined,
+      renotify: !!d.tag && !quiet,
+      data: { url: d.url || '/' }
+    });
+  }));
 });
 
 /* Diseño del aviso: «Unuvia» primero; debajo, el icono del tipo + la clase, y después el mensaje.
@@ -136,3 +161,4 @@ self.addEventListener('notificationclick', e => {
     if (self.clients.openWindow) return self.clients.openWindow(url);
   })());
 });
+try { self.__uvTest = { uvSilent, unuviaNotif }; } catch (_) {}
