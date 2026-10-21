@@ -71,7 +71,7 @@ async def main():
         chk("muestra cuántos usos quedan",await pg.evaluate("/te quedan 27/.test(document.getElementById('toast').textContent)"))
         await pg.screenshot(path='/home/claude/gem_ok.png')
         print("Errores (mensajes claros y botón vuelve a estar disponible)")
-        for mode,frag in [('403','no tiene activada la IA'),('429','límite de hoy'),('404','todavía no está activada'),('empty','no ha devuelto preguntas'),('throw','No se pudo conectar')]:
+        for mode,frag in [('403','no tiene activada la IA'),('429','límite de hoy'),('404','todavía no está activada'),('empty','no ha devuelto preguntas'),('throw','Avisa al administrador')]:
             await pg.evaluate(f"window.__mode='{mode}';window.__delay=0;window.__calls=[];AI.items=null;AI.errs=[];bankPaint();document.querySelector('.ai-gem .add').click()");await pg.wait_for_timeout(500)
             t=await pg.evaluate("document.getElementById('toast').textContent"); en=await pg.evaluate("!document.querySelector('.ai-gem .add').disabled")
             chk(f"{mode}: «{frag}» y botón disponible",frag in t and en,(t,en))

@@ -1,0 +1,131 @@
+import asyncio,json,sys
+sys.argv=[sys.argv[0]]
+exec(open('/home/claude/test_nov1.py').read().split("async def main():")[0])
+UA_AND="Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36"
+UA_IOS="Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
+STUB="""
+window.__perm='default';Object.defineProperty(Notification,'permission',{get:()=>window.__perm,configurable:true});
+window.__bip=()=>{const e=new Event('beforeinstallprompt');e.prompt=()=>{window.__prompted=(window.__prompted||0)+1;return Promise.resolve()};e.userChoice=Promise.resolve({outcome:'accepted'});window.dispatchEvent(e)};
+"""
+async def mk(p,ua=None,mobile=True,standalone=False):
+    b=await p.chromium.launch(args=["--no-sandbox"])
+    kw=dict(viewport={"width":390 if mobile else 1280,"height":844 if mobile else 800},device_scale_factor=1,is_mobile=mobile,has_touch=mobile)
+    if ua: kw['user_agent']=ua
+    ctx=await b.new_context(**kw); pg=await ctx.new_page(); errs=[]
+    pg.on("pageerror",lambda e:errs.append(str(e)[:200]))
+    async def patch(route):
+        r=await route.fetch(); t=await r.text()
+        await route.fulfill(response=r,body=t.replace('sb=window.supabase?','sb=window.__fakeSb?window.__fakeSb:window.supabase?',1))
+    await pg.route("**/app.js*",patch);await pg.route("https://cdn.jsdelivr.net/**",lambda r:r.abort())
+    st="Object.defineProperty(navigator,'standalone',{get:()=>true});" if standalone else ""
+    await pg.add_init_script(FAKE+STUB+st+"try{localStorage.setItem('unuvia_perf','full');localStorage.setItem('unuvia_perf_v','3');localStorage.setItem('unuvia_theme','dark');localStorage.setItem('unuvia_cookies','1')}catch(e){}")
+    return b,pg,errs
+async def main():
+    async with async_playwright() as p:
+        print("DESCARGAR LA APP")
+        b,pg,errs=await mk(p,UA_AND);await pg.goto("http://localhost:8766/");await pg.wait_for_timeout(1800);E=pg.evaluate
+        chk("en Android, ya en la pantalla de entrada, hay un botón «Descargar la app»",await E("(()=>{const f=document.getElementById('instFab');return !!f&&f.innerText.includes('Descargar la app')&&f.getBoundingClientRect().width>100})()"))
+        await E("window.__bip();0");await pg.wait_for_timeout(300)
+        await E("document.querySelector('#instFab .inst-go').click();0");await pg.wait_for_timeout(400)
+        chk("al pulsarlo lanza el instalador de Android (prompt)",await E("window.__prompted")==1)
+        await E("window.dispatchEvent(new Event('appinstalled'));0");await pg.wait_for_timeout(200)
+        chk("al instalarse, el botón desaparece",await E("!document.getElementById('instFab')"))
+        await b.close()
+        b,pg,errs=await mk(p,UA_AND);await pg.goto("http://localhost:8766/");await pg.wait_for_timeout(1800);E=pg.evaluate
+        await E("document.querySelector('#instFab .inst-go').click();0");await pg.wait_for_timeout(400)
+        t=await E("(document.getElementById('uvDlg')||{innerText:''}).innerText")
+        chk("si Chrome no ofrece el instalador, enseña los pasos (⋮ → Instalar app)",'Instalar app' in t and 'Chrome' in t,t[:80])
+        await E("uvDlgClose();0");await pg.screenshot(path='/home/claude/n4_install.png')
+        await E("document.querySelector('#instFab .inst-x').click();0")
+        chk("la ✕ lo oculta 3 días (se recuerda)",await E("!document.getElementById('instFab')&&Date.now()-(+localStorage.getItem('unuvia_inst_x'))<5000"))
+        await E("instMount();0")
+        chk("y no vuelve a salir al recargar la lista de botones",await E("!document.getElementById('instFab')"))
+        await b.close()
+        b,pg,errs=await mk(p,UA_IOS);await pg.goto("http://localhost:8766/");await pg.wait_for_timeout(1500);E=pg.evaluate
+        chk("en iPhone NO sale (allí se instala desde Safari con su propia guía)",await E("!document.getElementById('instFab')"))
+        await b.close()
+        b,pg,errs=await mk(p,UA_AND,standalone=True);await pg.goto("http://localhost:8766/");await pg.wait_for_timeout(1500);E=pg.evaluate
+        chk("si la app YA está instalada (abierta como app) no sale",await E("!document.getElementById('instFab')"))
+        await b.close()
+        b,pg,errs=await mk(p,None,mobile=False);await pg.goto("http://localhost:8766/");await pg.wait_for_timeout(1500);E=pg.evaluate
+        chk("en ordenador sin instalador disponible no molesta",await E("!document.getElementById('instFab')"))
+        await E("window.__bip();0");await pg.wait_for_timeout(300)
+        chk("en ordenador, si Chrome ofrece instalar, sale «Instalar Unuvia»",await E("(document.getElementById('instFab')||{innerText:''}).innerText.includes('Instalar Unuvia')"))
+        await b.close()
+        print("ACTIVAR AVISOS (invitación)")
+        b,pg,errs=await mk(p,UA_AND);await login(pg);E=pg.evaluate
+        await E("authUid='u1';window.__perm='default';localStorage.removeItem('unuvia_pn_x');document.getElementById('pnNudge')&&document.getElementById('pnNudge').remove();pnCheck();0");await pg.wait_for_timeout(300)
+        chk("con el permiso sin dar, sale la invitación «Activa los avisos»",await E("!!document.getElementById('pnNudge')"))
+        await pg.screenshot(path='/home/claude/n4_nudge.png')
+        await E("pnNo();0");await E("pnCheck();0")
+        chk("«Ahora no» la quita y no vuelve a salir en una semana",await E("!document.getElementById('pnNudge')"))
+        await E("localStorage.removeItem('unuvia_pn_x');window.__perm='granted';pnCheck();0")
+        chk("si ya diste permiso, no se muestra",await E("!document.getElementById('pnNudge')"))
+        await E("window.__perm='denied';pnCheck();0")
+        chk("si está bloqueado, tampoco insiste",await E("!document.getElementById('pnNudge')"))
+        await E("localStorage.removeItem('unuvia_pn_x');window.__perm='default';window.__en=0;enablePush=async()=>{window.__en++};pnCheck();document.querySelector('#pnNudge .add').click();0");await pg.wait_for_timeout(300)
+        chk("«Activar» llama a activar los avisos de este dispositivo y cierra la invitación",await E("window.__en===1&&!document.getElementById('pnNudge')"))
+        print("ESTADO Y AYUDA")
+        await E("""window.__perm='granted';authUid='u1';
+          const sub={endpoint:'https://fcm.googleapis.com/fcm/send/XYZ'};window.__shown=[];
+          navigator.serviceWorker.getRegistration=async()=>({active:{},pushManager:{getSubscription:async()=>sub},showNotification:async(t,o)=>{window.__shown.push([t,o])}});
+          notifPrefs=mergePrefs(null);diagOpen();0""");await pg.wait_for_timeout(1500)
+        t=await E("document.getElementById('uvDlg').innerText")
+        chk("enseña el estado: internet, servidor, sesión, versión, permiso, service worker, suscripción…",all(x in t for x in ['Internet','Servidor de Unuvia','Sesión','Versión de la app','Permiso de avisos','Service worker','suscrito','Guardado en el servidor']),t[:80])
+        chk("marca en rojo lo que falla (no está guardado en el servidor) y dice qué hacer",await E("!!document.querySelector('.dg-row.bad')")and 'Activar avisos' in t)
+        chk("permiso concedido y service worker activo salen en verde",await E("[...document.querySelectorAll('.dg-row.ok .dg-tx b')].map(x=>x.textContent).join('|')").__contains__('Permiso de avisos') if False else 'Permiso de avisos' in await E("[...document.querySelectorAll('.dg-row.ok .dg-tx b')].map(x=>x.textContent).join('|')"))
+        await pg.screenshot(path='/home/claude/n4_estado.png')
+        await E("diagLocal();0");await pg.wait_for_timeout(500)
+        chk("«Aviso de prueba aquí» muestra un aviso local (comprueba el dispositivo)",await E("window.__shown.length===1&&window.__shown[0][0]==='Unuvia'")and 'Enviado' in await E("document.getElementById('dgOut').innerText"))
+        await E("window.__fakeSb.functions.invoke=async(n,o)=>({data:{ok:true,keyMatch:false,count:2,results:[{ua:'Android 14 · Chrome',host:'fcm.googleapis.com',status:403,ok:false,detail:'VAPID'},{ua:'iOS 17 · Safari · app',host:'web.push.apple.com',status:201,ok:true}]},error:null});diagServer();0");await pg.wait_for_timeout(600)
+        t=await E("document.getElementById('dgOut').innerText")
+        chk("prueba del servidor: avisa de que las claves no coinciden y dice qué contesta cada servicio",'claves no coinciden' in t and 'fcm.googleapis.com' in t and 'rechaza las claves' in t and 'web.push.apple.com' in t and 'entregado' in t,t[:200])
+        await E("window.__fakeSb.functions.invoke=async()=>({data:null,error:{name:'FunctionsFetchError',message:'Failed to send a request to the Edge Function'}});diagServer();0");await pg.wait_for_timeout(500)
+        chk("si la función push-test no está desplegada, lo explica",'push-test' in await E("document.getElementById('dgOut').innerText") and 'desplegada' in await E("document.getElementById('dgOut').innerText"))
+        await E("window.__fakeSb.functions.invoke=async()=>({data:{ok:true,keyMatch:true,count:1,results:[{ua:'x',host:'fcm.googleapis.com',status:410,ok:false,expired:true}]},error:null});diagServer();0");await pg.wait_for_timeout(500)
+        chk("suscripción caducada: dice que se borró y que hay que volver a activar",'caducada' in await E("document.getElementById('dgOut').innerText"))
+        await E("window.__rep=null;copyText=async(t)=>{window.__rep=t;return true};diagCopy();0");await pg.wait_for_timeout(200)
+        r=await E("window.__rep")
+        chk("«Copiar informe» deja un texto con versión, dispositivo y cada comprobación [OK]/[FALLA]",'Versión:' in r and '[OK]' in r and '[FALLA]' in r and '@' not in r,r[:160])
+        await E("uvDlgClose();0")
+        await E("window.__perm='denied';diagOpen();0");await pg.wait_for_timeout(1200)
+        t=await E("document.getElementById('uvDlg').innerText")
+        chk("con los avisos BLOQUEADOS explica cómo desbloquearlos en Android",'BLOQUEADO' in t and 'Ajustes del móvil' in t)
+        await E("uvDlgClose();0")
+        chk("el menú del perfil tiene «Estado y ayuda» y «Descargar la app»",(lambda s:'Estado y ayuda' in s and 'Descargar la app' in s)(await (await pg.request.get('http://localhost:8766/app.js')).text()))
+        print("CORREO CON CÓDIGO (OTP)")
+        m=await E("[otpErrorMsg({code:'over_email_send_rate_limit',message:'email rate limit exceeded',status:429}),otpErrorMsg({code:'over_request_rate_limit',message:'For security purposes, you can only request this after 59 seconds.',status:429}),otpErrorMsg({code:'email_address_not_authorized',message:'Email address not authorized',status:400}),otpErrorMsg({code:'unexpected_failure',message:'Error sending magic link email',status:500}),otpErrorMsg({message:'Token has expired or is invalid'})]")
+        chk("límite de correos de Unuvia → mensaje claro",'demasiados correos' in m[0],m[0])
+        chk("espera entre códigos (59 segundos) → se mantiene el mensaje de siempre",'demasiados códigos' in m[1],m[1])
+        chk("correo no autorizado → dice que falta configurar el envío",'configurar el envío' in m[2],m[2])
+        chk("fallo del servidor de correo → «no pudo enviar el correo»",'no pudo enviar el correo' in m[3],m[3])
+        chk("código caducado → mensaje de siempre",'caducado' in m[4],m[4])
+        await E("window.__rpc.length=0;ERRL.sent=0;ERRL.seen.clear();ERRL.off=false;otpErrorMsg({code:'unexpected_failure',message:'Error sending magic link email to ana@centro.es',status:500});0")
+        r=await E("window.__rpc.filter(x=>x[0]==='log_client_error')")
+        chk("el fallo del correo queda en el registro de errores del administrador (sin el correo de nadie)",len(r)==1 and r[0][1]['p_kind']=='otp' and '@' not in json.dumps(r[0][1]),r)
+        print("errores JS:",errs[:3]);await b.close()
+        b,pg,errs=await mk(p,None,mobile=True);await pg.goto("http://localhost:8766/");await pg.wait_for_timeout(1500);E=pg.evaluate
+        await E("acceptCookies();launchApp(document.getElementById('startLogin'));0");await pg.wait_for_timeout(1000)
+        await E("otpEmail='ana@correo.es';showOtpStep();0");await pg.wait_for_timeout(500)
+        t=await E("(document.getElementById('otpHelp')||{textContent:'NO'}).textContent")
+        chk("tras pedir el código sale «¿No te llega el código?» con consejos (spam, correo del cole, esperar)",'Spam' in t and 'colegio' in t and 'otro correo' in t,t[:80])
+        await pg.screenshot(path='/home/claude/n4_otp.png')
+        print("DIAGNÓSTICO DE LA IA (administrador)")
+        await E("window.__fakeSb.functions.invoke=async(n,o)=>({data:{ok:true,checks:[{k:'Clave de Gemini',ok:true,t:'Guardada'},{k:'Modelo',ok:true,t:'gemini-2.5-flash'},{k:'Google (Gemini)',ok:false,t:'Error 404',d:'Ese modelo no existe: cambia GEMINI_MODEL.'}]},error:null});aiDiag();0");await pg.wait_for_timeout(600)
+        t=await E("document.getElementById('aiDg').innerText")
+        chk("enseña cada comprobación y el consejo de lo que falla (modelo que no existe)",'Clave de Gemini' in t and 'Error 404' in t and 'GEMINI_MODEL' in t,t[:120])
+        await E("uvDlgClose();window.__fakeSb.functions.invoke=async()=>({data:null,error:{name:'FunctionsFetchError',context:new Error('x')}});aiDiag();0");await pg.wait_for_timeout(600)
+        t=await E("document.getElementById('aiDg').innerText")
+        chk("si la función no responde, explica las 3 causas (nombre, Verify JWT, ALLOWED_ORIGINS)",'gemini' in t and 'Verify JWT' in t and 'ALLOWED_ORIGINS' in t,t[:200])
+        await E("uvDlgClose();window.__fakeSb.functions.invoke=async()=>({data:null,error:{name:'FunctionsHttpError',context:{status:403,json:async()=>({code:'P'})}}});aiDiag();0");await pg.wait_for_timeout(600)
+        chk("si no eres el administrador lo dice claro",'no es administradora' in await E("document.getElementById('aiDg').innerText"))
+        await E("uvDlgClose();0")
+        chk("el panel → Funciones tiene el botón «Probar la IA»",'Probar la IA' in await E("admpFunc()"))
+        await E("CFG.features={gemini:true};window.__fakeSb.functions.invoke=async()=>({data:null,error:{name:'FunctionsFetchError',context:new Error('x')}});authEmail='unuviasupport@gmail.com';0")
+        m1=await E("iaInvoke({task:'ficha',topic:'x'}).then(()=>'ok',e=>e.message)")
+        await E("authEmail='profe@centro.es';0")
+        m2=await E("iaInvoke({task:'ficha',topic:'x'}).then(()=>'ok',e=>e.message)")
+        chk("el administrador ve la causa técnica; un profesor, un mensaje sencillo («avisa al administrador»)",'Probar la IA' in m1 and 'Avisa al administrador' in m2 and 'Verify' not in m2,(m1,m2))
+        print("errores JS:",errs[:3]);await b.close()
+    print(f"\n{ok} correctas, {bad} fallos")
+asyncio.run(main())

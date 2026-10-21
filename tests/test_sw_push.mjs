@@ -1,0 +1,32 @@
+import fs from 'node:fs'; import vm from 'node:vm';
+const code=fs.readFileSync('/home/claude/out/sw.js','utf8');
+const L={},cache=new Map(),shown=[],posted=[],subs=[];
+const sandbox={console,URL,Response:class{constructor(b){this.b=b}async text(){return String(this.b)}async json(){return JSON.parse(this.b)}},Request:class{},fetch:async()=>({}),setTimeout,Date,Promise,
+ caches:{open:async()=>({match:async(k)=>cache.has(k)?new sandbox.Response(cache.get(k)):undefined,put:async(k,r)=>{cache.set(k,await r.text())},addAll:async()=>{},keys:async()=>[],delete:async()=>true}),keys:async()=>[],delete:async()=>true,match:async()=>undefined},
+ addEventListener:(t,f)=>{L[t]=f}};
+sandbox.self={addEventListener:(t,f)=>{L[t]=f},registration:{showNotification:async(t,o)=>{shown.push([t,o])},pushManager:{subscribe:async(o)=>{subs.push(o);return{endpoint:'https://fcm/new'}}}},skipWaiting(){},clients:{claim(){},matchAll:async()=>[{postMessage:m=>posted.push(m),focus:async()=>{}}],openWindow:async()=>{}},location:{origin:'https://unuvia.es'}};
+vm.createContext(sandbox); vm.runInContext(code,sandbox);
+let ok=0,bad=0;const T=async(n,f)=>{let r=false;try{r=await f()}catch(e){console.log('   error:',e.message)}if(r){ok++;console.log('  ✓',n)}else{bad++;console.log('  ✗',n)}};
+const push=async(data,{text}={})=>{let p;shown.length=0;await L.push({data:data===null?null:{json:()=>{if(text)throw new Error('no json');return data},text:()=>String(data)},waitUntil:x=>{p=x}});await p;return shown[0]};
+console.log('Service worker: avisos (push)');
+await T('aviso normal (formato 2 de Unuvia): se muestra con título «Unuvia» y el mensaje',async()=>{const s=await push({v:2,kind:'tarea',cls:'1º FPB',body:'Nueva tarea: Redacción',url:'/#work'});return s&&s[0]==='Unuvia'&&/Redacción/.test(s[1].body)&&s[1].data.url==='/#work'});
+await T('suena y vibra si no hay silencio',async()=>{const s=await push({v:2,kind:'anuncio',cls:'A',body:'x'});return Array.isArray(s[1].vibrate)&&!s[1].silent});
+await T('aviso mínimo sin datos (payload vacío) también se muestra (el navegador lo exige)',async()=>{const s=await push({});return !!s&&typeof s[0]==='string'});
+await T('sin cuerpo (push sin datos) también se muestra',async()=>{const s=await push(null);return !!s});
+await T('texto plano (no JSON) también se muestra',async()=>{const s=await push('Hola desde el servidor',{text:true});return !!s&&/Hola/.test(JSON.stringify(s))});
+await T('el aviso de prueba del servidor (kind «prueba», tag) se muestra y renueva el anterior',async()=>{const s=await push({v:2,kind:'prueba',cls:'Unuvia',title:'Unuvia',body:'¡Funciona! Este aviso de prueba salió del servidor.',url:'/',tag:'prueba'});return s[1].tag==='prueba'&&s[1].renotify===true&&/Funciona/.test(s[1].body)});
+await L.message({data:{type:'prefs',muted:['1º FPB'],quiet:{on:false,from:'22:00',to:'07:00'}},waitUntil:p=>p});await new Promise(r=>setTimeout(r,20));
+await T('con una clase silenciada llega en silencio (sin vibrar ni sonar)',async()=>{const s=await push({v:2,kind:'tarea',cls:'1º FPB',body:'x'});return s[1].silent===true&&!s[1].vibrate&&s[1].renotify===false});
+await T('otra clase no silenciada sigue sonando',async()=>{const s=await push({v:2,kind:'tarea',cls:'Mates',body:'x'});return !s[1].silent&&!!s[1].vibrate});
+await L.message({data:{type:'prefs',muted:'basura',quiet:{on:true,from:'xx',to:'yy'}},waitUntil:p=>p});await new Promise(r=>setTimeout(r,20));
+await T('preferencias corruptas no impiden mostrar el aviso',async()=>{const s=await push({v:2,kind:'tarea',cls:'Mates',body:'x'});return !!s});
+console.log('Service worker: la suscripción cambia sola');
+const key=new Uint8Array([1,2,3]);let p;
+await L.pushsubscriptionchange({oldSubscription:{options:{applicationServerKey:key}},newSubscription:null,waitUntil:x=>{p=x}});await p;
+await T('se vuelve a suscribir con la MISMA clave VAPID',async()=>subs.length===1&&subs[0].applicationServerKey===key&&subs[0].userVisibleOnly===true);
+await T('y avisa a la app para que guarde la suscripción nueva',async()=>posted.some(m=>m.type==='resync'));
+await T('deja una marca en la caché con la hora del cambio',async()=>/^\d+$/.test(cache.get('/__resub')||''));
+posted.length=0;subs.length=0;
+await L.pushsubscriptionchange({oldSubscription:null,newSubscription:null,waitUntil:x=>{p=x}});await p;
+await T('si no hay datos del cambio no se rompe nada',async()=>subs.length===0);
+console.log(`\n${ok} correctas, ${bad} fallos`);

@@ -3,7 +3,7 @@
    - Avisos al móvil.
    - Sin conexión: guarda una copia de la web (red primero; si no hay internet, usa la copia).
      Así siempre ves la última versión cuando hay conexión. */
-const CACHE = 'unuvia-v8';
+const CACHE = 'unuvia-v9';
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.webmanifest', '/icon-192.png', '/badge-96.png']).catch(() => {})));
@@ -150,6 +150,22 @@ function unuviaNotif(d) {
   return { title: 'Unuvia', body: emo + ' ' + cls + (msg ? '\n' + msg.slice(0, 180) : '') };
 }
 
+// Los navegadores (sobre todo Chrome en Android y en ordenador) a veces CAMBIAN la suscripción de avisos por su cuenta:
+// si no se hace nada, los avisos dejan de llegar sin que nadie lo note. Aquí se renueva sola y se avisa a la app para que la guarde.
+self.addEventListener('pushsubscriptionchange', e => {
+  e.waitUntil((async () => {
+    try {
+      const old = e.oldSubscription;
+      const key = old && old.options && old.options.applicationServerKey;
+      let sub = e.newSubscription;
+      if (!sub && key) sub = await self.registration.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key });
+      const c = await caches.open('uvmeta');
+      await c.put('/__resub', new Response(String(Date.now())));
+      const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+      all.forEach(w => w.postMessage({ type: 'resync' }));
+    } catch (_) { /* si falla, la app vuelve a guardarla al abrirse */ }
+  })());
+});
 self.addEventListener('notificationclick', e => {
   e.notification.close();
   const url = (e.notification.data && e.notification.data.url) || '/';
