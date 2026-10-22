@@ -2,7 +2,7 @@ import asyncio,json,re
 from playwright.async_api import async_playwright
 UA_IOS="Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1"
 UA_AND="Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Mobile Safari/537.36"
-CUR="202610211500"; NEW="202610211600"
+CUR="202610221100"; NEW="202610221200"
 async def mk(p,ver=None,ua=None,mobile=False,rewrite_index=None,delay=0):
     b=await p.chromium.launch(args=["--no-sandbox"])
     kw=dict(viewport={"width":390 if mobile else 1280,"height":844 if mobile else 800},device_scale_factor=1,is_mobile=mobile,has_touch=mobile)

@@ -3,7 +3,7 @@
    - Avisos al móvil.
    - Sin conexión: guarda una copia de la web (red primero; si no hay internet, usa la copia).
      Así siempre ves la última versión cuando hay conexión. */
-const CACHE = 'unuvia-v14';
+const CACHE = 'unuvia-v15';
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/', '/manifest.webmanifest', '/icon-192.png', '/badge-96.png']).catch(() => {})));
@@ -21,6 +21,7 @@ addEventListener('fetch', e => {
   const same = u.origin === self.location.origin, cdn = u.hostname === 'cdn.jsdelivr.net';
   if (!same && !cdn) return;                       // la base de datos y los archivos de Supabase nunca se guardan aquí
   if (same && u.pathname === '/version.json') return;   // el aviso de «hay una versión nueva» siempre va directo a la red, sin copia
+  if (same && r.mode === 'navigate') { e.respondWith(handleNav(r)); return; }   // la página: manejador propio que NUNCA falla con un error de Safari
   const versioned = same && u.searchParams.has('v') && /\.(?:js|css)$/.test(u.pathname);   // app.js?v=… y styles.css?v=…: cada versión tiene su propia dirección
   const asset = same && /\.(?:png|webp|jpe?g|svg|ico|woff2?)$/.test(u.pathname);
   // IMPORTANTE: waitUntil se llama AQUÍ, de forma síncrona. Llamarlo más tarde (dentro de la promesa) lo rechaza Safari en iPhone
@@ -63,6 +64,40 @@ addEventListener('fetch', e => {
     }
   })());
 });
+
+// Página sin conexión o con el servidor caído: en vez del error del navegador («Load failed»), un aviso con «Reintentar»
+const OFFLINE_HTML = '<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unuvia</title>' +
+  '<body style="margin:0;display:grid;place-items:center;min-height:100vh;background:#0b1220;color:#fff;font:16px/1.5 system-ui,-apple-system,sans-serif;text-align:center;padding:24px;box-sizing:border-box">' +
+  '<main><h1 style="font-size:22px;margin:0 0 8px">No se pudo cargar Unuvia</h1><p style="color:#9aa7bd;margin:0 0 18px">Parece que no hay conexión o el servidor no responde ahora mismo.</p>' +
+  '<button onclick="location.reload()" style="font:inherit;font-weight:700;padding:12px 24px;border-radius:999px;border:0;background:#008cff;color:#fff">Reintentar</button></main>' +
+  '<script>setInterval(function(){if(navigator.onLine)location.reload()},5000)</script></body></html>';
+const offlinePage = () => new Response(OFFLINE_HTML, { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
+// Safari (y Chrome) rechazan una respuesta «redirigida» para una navegación: se copia para que ya no cuente como redirigida
+const cleanRes = async res => {
+  if (!res || !res.redirected) return res;
+  try { return new Response(await res.blob(), { status: res.status, statusText: res.statusText, headers: res.headers }); } catch (_) { return res; }
+};
+// Navegaciones (abrir la web, recargar, volver…): red primero y, si falla, la copia; si tampoco hay copia, la página de «Reintentar».
+// Nunca rechaza la respuesta: eso es lo que en iPhone enseñaba «FetchEvent.respondWith received an error: TypeError: Load failed».
+async function handleNav(r) {
+  let cache = null;
+  try { cache = await caches.open(CACHE); } catch (_) {}
+  try {
+    // Petición nueva con la dirección (no la de navegación): Safari a veces falla al reutilizar la petición de navegación con opciones
+    const res = await fetch(r.url, { cache: 'no-cache', credentials: 'same-origin', redirect: 'follow' });
+    const out = await cleanRes(res);
+    if (out && out.ok && cache) { try { await cache.put(r.url, out.clone()); } catch (_) {} }
+    return out;
+  } catch (_) {
+    try {
+      if (cache) {
+        const hit = (await cache.match(r.url, { ignoreSearch: true })) || (await cache.match('/')) || (await cache.match('/index.html'));
+        if (hit) return hit;
+      }
+    } catch (__) {}
+    return offlinePage();
+  }
+}
 
 // Borra las copias antiguas del mismo archivo (otra ?v=) para que no se acumulen
 async function prune(cache, u) {

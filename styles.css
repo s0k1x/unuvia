@@ -875,3 +875,10 @@ html.a11y-read a:not(.gg-b):not(.ggt-b):not(.mini-btn):not(.meet-btn){text-decor
 .aig{margin:8px 0;display:flex;flex-direction:column;gap:6px}
 .aig-c{padding:10px 12px;border-radius:14px;border:1px solid color-mix(in srgb,var(--accent,#008cff) 55%,transparent);background:color-mix(in srgb,var(--accent,#008cff) 10%,transparent);display:flex;flex-direction:column;gap:4px}
 .aig-c p{margin:0}.aig-c small{color:var(--ui-mut,#9aa7bd)}
+
+/* Herramienta Google: el campo del enlace y los botones no se estiran a todo el ancho */
+.ggt-row{align-items:stretch}
+.ggt-row input{flex:1 1 auto!important;min-width:0!important;width:auto!important}
+.ggt-row button{width:auto!important;flex:0 0 auto!important}
+.ggt-act>button,.ggt-act>a,.ggt-g2>button{width:auto!important;flex:0 0 auto!important}
+.ggt-links .mini-btn{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;text-decoration:none!important;font-weight:700}

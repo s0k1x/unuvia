@@ -1,5 +1,5 @@
 {
-  "v": "202610220900",
+  "v": "202610221100",
   "force": true,
-  "notes": "Nuevo: lectura en voz alta y modo dislexia, corrección asistida con IA e invitar a toda la lista con un clic."
+  "notes": "Arreglado el error al pulsar «Actualizar» en iPhone, iconos que faltaban en el menú y mejoras en la herramienta Google."
 }
