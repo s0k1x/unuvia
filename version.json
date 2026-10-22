@@ -1,5 +1,5 @@
 {
-  "v": "202610211500",
+  "v": "202610220900",
   "force": true,
-  "notes": "Nuevo: selector de color arreglado, la IA reintenta cuando Google está saturado y avisos más fáciles de arreglar."
+  "notes": "Nuevo: lectura en voz alta y modo dislexia, corrección asistida con IA e invitar a toda la lista con un clic."
 }
